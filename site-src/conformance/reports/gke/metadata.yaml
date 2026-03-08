@@ -1,0 +1,13 @@
+organization: "Google Cloud"
+project: "GKE Multi Cluster Service"
+slug: "gke"
+url: "https://cloud.google.com/kubernetes-engine/docs/concepts/multi-cluster-services"
+contact:
+  - "@GoogleCloudPlatform"
+# latestReport:
+#   date: "YYYY-MM-DD"
+#   projectVersion: "x.y.z"
+#   mcsAPIVersion: "vX.Y.Z"
+#   conformanceSuiteCommit: ""
+#   reportFile: "report-YYYY-MM.html"
+#   result: conformant|partially-conformant

@@ -1,0 +1,13 @@
+organization: "Amazon Web Services"
+project: "MCS Controller for AWS Cloud Map"
+slug: "aws-cloudmap"
+url: "https://github.com/aws/aws-cloud-map-mcs-controller-for-k8s"
+contact:
+  - "@aws"
+# latestReport:
+#   date: "YYYY-MM-DD"
+#   projectVersion: "x.y.z"
+#   mcsAPIVersion: "vX.Y.Z"
+#   conformanceSuiteCommit: ""
+#   reportFile: "report-YYYY-MM.html"
+#   result: conformant|partially-conformant

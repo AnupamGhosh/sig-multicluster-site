@@ -7,10 +7,11 @@ APIs.
 ## Conformance Expectations
 
 We expect there will be varying levels of conformance among the different
-providers for some time. SIG-Multicluster is currently working on the framework
-for a conformance suite so implementations can test their conformance to the API
-specifications in an automated way. For now, each individual KEP indicates what
-a conformant implementation of a given API  "MUST", "MAY", and "SHOULD" adhere
+providers. The [MCS-API Conformance Report Program](conformance.md) is now live
+and provides a structured way for implementations to submit conformance test
+results. Reports at all conformance levels (conformant, partial, and
+non-conformant) are accepted and encouraged. Each individual KEP indicates what
+a conformant implementation of a given API "MUST", "MAY", and "SHOULD" adhere
 to, following the interpretations of those terms as described in RFC 2119.
 
 

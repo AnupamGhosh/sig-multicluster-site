@@ -1,0 +1,13 @@
+organization: "Cilium / Isovalent"
+project: "Cilium Cluster Mesh"
+slug: "cilium"
+url: "https://docs.cilium.io/en/stable/network/clustermesh/mcsapi/"
+contact:
+  - "@cilium"
+# latestReport:
+#   date: "YYYY-MM-DD"
+#   projectVersion: "x.y.z"
+#   mcsAPIVersion: "vX.Y.Z"
+#   conformanceSuiteCommit: ""
+#   reportFile: "report-YYYY-MM.html"
+#   result: conformant|partially-conformant

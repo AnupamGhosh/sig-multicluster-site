@@ -1,0 +1,97 @@
+name: Conformance Report Submission
+description: Submit an MCS-API conformance report for your implementation
+title: "Conformance Report: <project name>"
+labels:
+  - conformance-report
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting a conformance report! Please fill out the fields
+        below and attach your HTML conformance report.
+
+        For more details on the conformance program, see the
+        [Conformance Report Program documentation](https://multicluster.sigs.k8s.io/guides/conformance/).
+  - type: input
+    id: organization
+    attributes:
+      label: Organization
+      description: The organization behind the implementation
+      placeholder: e.g. "Google Cloud"
+    validations:
+      required: true
+  - type: input
+    id: project
+    attributes:
+      label: Project Name
+      description: The name of the implementation
+      placeholder: e.g. "GKE Multi Cluster Service"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Project URL
+      description: URL to the project's homepage or repository
+      placeholder: e.g. "https://github.com/org/project"
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact GitHub Handle
+      description: GitHub handle for the primary contact
+      placeholder: e.g. "@username"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Implementation Version Tested
+      description: The version of your implementation that was tested
+      placeholder: e.g. "1.2.3"
+    validations:
+      required: true
+  - type: input
+    id: mcs-api-version
+    attributes:
+      label: MCS-API Version Tested Against
+      description: The version of the MCS-API specification tested against
+      placeholder: e.g. "v0.1.0"
+    validations:
+      required: false
+  - type: input
+    id: suite-commit
+    attributes:
+      label: Conformance Suite Version/Commit
+      description: The version or git commit of the conformance test suite used
+      placeholder: e.g. "abc1234" or "v0.1.0"
+    validations:
+      required: false
+  - type: dropdown
+    id: result
+    attributes:
+      label: Conformance Result
+      description: The overall result of the conformance test run
+      options:
+        - conformant
+        - partially-conformant
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: Conformance Report
+      description: |
+        Attach the HTML conformance report file, or provide a link to the report.
+        The report should be the unmodified HTML output from the MCS-API conformance test suite.
+      placeholder: Drag and drop your HTML report file here, or paste a link to the report.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Any additional context or notes about this conformance report
+    validations:
+      required: false

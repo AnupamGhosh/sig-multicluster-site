@@ -1,0 +1,13 @@
+organization: "Submariner.io"
+project: "Submariner"
+slug: "submariner"
+url: "https://submariner.io/"
+contact:
+  - "@submariner-io"
+# latestReport:
+#   date: "YYYY-MM-DD"
+#   projectVersion: "x.y.z"
+#   mcsAPIVersion: "vX.Y.Z"
+#   conformanceSuiteCommit: ""
+#   reportFile: "report-YYYY-MM.html"
+#   result: conformant|partially-conformant

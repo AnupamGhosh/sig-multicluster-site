@@ -1,0 +1,13 @@
+organization: "Antrea.io"
+project: "Antrea Multi-cluster"
+slug: "antrea"
+url: "https://github.com/antrea-io/antrea/tree/main/multicluster"
+contact:
+  - "@antrea-io"
+# latestReport:
+#   date: "YYYY-MM-DD"
+#   projectVersion: "x.y.z"
+#   mcsAPIVersion: "vX.Y.Z"
+#   conformanceSuiteCommit: ""
+#   reportFile: "report-YYYY-MM.html"
+#   result: conformant|partially-conformant
