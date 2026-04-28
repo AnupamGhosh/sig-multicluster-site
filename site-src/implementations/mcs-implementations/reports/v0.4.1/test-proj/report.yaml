@@ -1,0 +1,267 @@
+groups:
+    - name: Required
+      tests:
+        - desc: A ServiceImport should only exist as long as there's at least one exporting cluster
+          ref: https://github.com/kubernetes/enhancements/blob/master/keps/sig-multicluster/1645-multi-cluster-services-api/README.md#importing-services
+          labels: []
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: A service exported on two clusters with conflicting headlessness should apply the conflict resolution policy and report a Conflict condition on the ServiceExport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#headlessness
+          labels: []
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Connectivity to a service that is not exported should be inaccessible
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#exporting-services
+          labels: []
+          passed: true
+          failed: false
+          skipped: false
+          conformant: true
+          message: ""
+        - desc: A ClusterIP service exported on two clusters  should expose the union of the constituent service ports and raise a conflict
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#service-port
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: A ClusterIP service exported on two clusters with conflicting ports should apply the conflict resolution policy and report a Conflict condition on each ServiceExport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#service-port
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: An IP should be allocated for a ClusterSetIP ServiceImport for each IP family
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#clustersetip
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.005s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Exporting a ClusterIP service should create a ServiceImport of type ClusterSetIP in the service's namespace in each cluster. Unexporting should delete the ServiceImport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#importing-services
+          labels:
+            - ClusterIP
+          passed: false
+          failed: false
+          skipped: false
+          conformant: false
+          message: ' - The Valid condition was not set to True'
+        - desc: The InternalTrafficPolicy for a ClusterSetIP ServiceImport should match the exported service's InternalTrafficPolicy
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#internal-traffic-policy
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: The SessionAffinity for a ClusterSetIP ServiceImport should match the exported service's SessionAffinity
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#session-affinity
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.001s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: The TrafficDistribution for a ClusterSetIP ServiceImport should match the exported service's TrafficDistribution
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#traffic-distribution
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.004s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: The ports for a ClusterSetIP ServiceImport should match those of the exported service
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#service-port
+          labels:
+            - ClusterIP
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Exporting an ExternalName service should set ServiceExport Valid condition to False
+          ref: https://github.com/kubernetes/enhancements/blob/master/keps/sig-multicluster/1645-multi-cluster-services-api/README.md#service-types
+          labels:
+            - ExternalName
+          passed: false
+          failed: false
+          skipped: false
+          conformant: false
+          message: ' - The Valid condition was not set to False'
+        - desc: Exporting a headless service should create a ServiceImport of type Headless in the service's namespace in each cluster. Unexporting should delete the ServiceImport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#service-types
+          labels:
+            - Headless
+          passed: false
+          failed: false
+          skipped: false
+          conformant: false
+          message: ' - ServiceImport was not found on cluster "kind-c1"'
+        - desc: No clusterset IP should be allocated for a Headless ServiceImport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#clustersetip
+          labels:
+            - Headless
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.002s: ServiceImport was not found on cluster "kind-c1"'
+    - name: Optional
+      tests:
+        - desc: Connectivity to a ClusterIP service existing in two clusters but exported from one should only access the exporting cluster
+          ref: https://github.com/kubernetes/enhancements/blob/master/keps/sig-multicluster/1645-multi-cluster-services-api/README.md#exporting-services
+          labels:
+            - ClusterIP
+            - Connectivity
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.001s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Connectivity to an exported ClusterIP service should be accessible through DNS
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - ClusterIP
+            - Connectivity
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Connectivity to exported services with different port name on each cluster should route traffic to each port only to the cluster that exposes it
+          ref: ""
+          labels:
+            - ClusterIP
+            - Connectivity
+            - StrictPortConflict
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Connectivity to exported services with same port name but different port numbers on each cluster should only route traffic to the cluster that exposes the port
+          ref: ""
+          labels:
+            - ClusterIP
+            - Connectivity
+            - StrictPortConflict
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.002s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: A DNS SRV query of the <service>.<ns>.svc.clusterset.local domain for a ClusterIP service should return valid SRV records
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - ClusterIP
+            - DNS
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.001s: Expected 1 SRV records but got 0: []'
+        - desc: A DNS lookup of the <service>.<ns>.svc.clusterset.local domain for a ClusterIP service should resolve to the clusterset IP
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - ClusterIP
+            - DNS
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.002s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: DNS lookups of the <service>.<ns>.svc.cluster.local domain for a ClusterIP service should only resolve local services
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - ClusterIP
+            - DNS
+          passed: true
+          failed: false
+          skipped: false
+          conformant: true
+          message: ""
+        - desc: A DNS query of the <hostname>.<clusterid>.<service>.<ns>.svc.clusterset.local domain for a headless StatefulSet service should return the requested pod's endpoint address
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - DNS
+            - EndpointSlice
+            - Headless
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: A DNS SRV query of the <service>.<ns>.svc.clusterset.local domain for a headless service should return valid SRV records
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - DNS
+            - Headless
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.001s: Expected 2 SRV records but got 0: []'
+        - desc: A DNS query of the <service>.<ns>.svc.clusterset.local domain for a headless service should return the ready endpoint addresses of all the backing pods
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#dns
+          labels:
+            - DNS
+            - Headless
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.004s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Exporting a service should create an MCS EndpointSlice in the service's namespace in each cluster with the required MCS labels. Unexporting should delete the EndpointSlice.
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#using-endpointslice-objects-to-track-endpoints
+          labels:
+            - EndpointSlice
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: A service exported on two clusters with conflicting annotations and labels should apply the conflict resolution policy and report a Conflict condition on each ServiceExport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#service-port
+          labels:
+            - ExportedLabels
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.000s: ServiceImport was not found on cluster "kind-c1"'
+        - desc: Only labels and annotations specified as exported in the ServiceExport should be propagated to the ServiceImport
+          ref: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/1645-multi-cluster-services-api#labels-and-annotations
+          labels:
+            - ExportedLabels
+          passed: false
+          failed: true
+          skipped: false
+          conformant: true
+          message: ' - Timed out after 20.004s: ServiceImport was not found on cluster "kind-c1"'
+suitefailure: ""
+dnsdomain: clusterset.local
+passed: 20
+total: 27
+implementation:
+    organization: "Test Organization"
+    project: "alpha-project"
+    version: "v3.2.1"
+    url: "https://example.com"
