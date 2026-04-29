@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2026 The Kubernetes Authors.
+# Copyright The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@
 """Generate per-version conformance comparison pages from submitted report.yaml files.
 
 Scans all project directories under the implementations root for a reports/
-subdirectory containing report.yaml files. Generates comparison Markdown pages
+subdirectory containing reports as YAML files. Generates comparison Markdown pages
 under each project's comparisons/ directory.
 
 Expected layout:
     implementations/
         mcs-implementations/
             reports/
-                v0.4.1/submariner/report.yaml    (submitted)
-                v0.4.1/gke/report.yaml           (submitted)
-                v0.4.1/gke/report1.yaml          (submitted, additional report)
+                v0.4.1/submariner/v0.23.0.yaml    (submitted)
+                v0.4.1/gke/2026-01-01.yaml        (submitted)
+                v0.4.1/gke/2026-07-01.yaml        (submitted)
             comparisons/
-                matrix.md                        (generated)
+                matrix.md                         (generated)
 """
 
 from __future__ import annotations
@@ -134,7 +134,7 @@ def main() -> None:
         reports_dir = pathlib.Path.joinpath(project_dir, "reports")
 
         reports_by_version: dict[str, list[ReportData]] = {}
-        for report_file in sorted(reports_dir.glob("*/*/report*.yaml")):
+        for report_file in sorted(reports_dir.glob("*/*/*.yaml")):
             api_version = report_file.parent.parent.name
             reports_by_version.setdefault(api_version, []).append(parse_report(report_file))
 
