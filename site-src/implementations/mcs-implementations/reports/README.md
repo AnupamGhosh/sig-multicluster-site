@@ -7,10 +7,8 @@ This directory contains conformance reports submitted by MCS API implementers.
 ```
 reports/
   <api-version>/
-    <impl-slug>/
-      report.yaml
-      report1.yaml   (optional, additional reports)
-      report2.yaml
+    <impl-name>/
+      <impl-version>.yaml
 ```
 
 For example:
@@ -19,10 +17,10 @@ For example:
 reports/
   v0.4.1/
     submariner/
-      report.yaml
+      v0.23.0.yaml
     gke/
-      report.yaml
-      report1.yaml
+      2026-01-01.yaml
+      2026-07-01.yaml
 ```
 
 ## How to Submit
@@ -36,18 +34,18 @@ reports/
    - `--url` — link to your project's documentation
 
 2. **Copy the generated `report.yaml`** into the appropriate directory:
-   `reports/<api-version>/<impl-slug>/report.yaml`
+   `reports/<api-version>/<impl-name>/<impl-version>.yaml`
 
-   - `<api-version>` is the version of the MCS API your implementation targets (e.g., `v0.4.1`)
-   - `<impl-slug>` is a lowercase identifier for your implementation (e.g., `submariner`, `gke`, `cilium`)
-   - An organization can submit multiple reports for the same API version by naming additional files `report1.yaml`, `report2.yaml`, etc.
+   - `<api-version>` is the version of the MCS API your implementation targets (e.g., `v0.5.0`)
+   - `<impl-name>` is a lowercase identifier for your implementation (e.g., `submariner`, `gke`, `cilium`)
+   - Optionally rename the file to your implementation version (e.g., `v0.23.0.yaml`, `2026-01-01.yaml`) — `report.yaml` is also fine
 
 3. **Open a pull request** against the
    [sig-multicluster-site](https://github.com/kubernetes-sigs/sig-multicluster-site) repository.
 
 ## Requirements
 
-The `report.yaml` must contain non-empty values for the following fields under `implementation`:
+The YAML report file must contain non-empty values for the following fields under `implementation`:
 
 - `organization`
 - `project`

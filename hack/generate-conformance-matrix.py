@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Generate per-version conformance comparison pages from submitted report.yaml files.
+"""Generate per-version conformance comparison pages from submitted YAML report files.
 
 Scans all project directories under the implementations root for a reports/
 subdirectory containing reports as YAML files. Generates comparison Markdown pages
-under each project's comparisons/ directory.
+under each project's directory.
 
 Expected layout:
     implementations/
@@ -26,8 +26,7 @@ Expected layout:
                 v0.4.1/submariner/v0.23.0.yaml    (submitted)
                 v0.4.1/gke/2026-01-01.yaml        (submitted)
                 v0.4.1/gke/2026-07-01.yaml        (submitted)
-            comparisons/
-                matrix.md                         (generated)
+            conformance-matrix.md                 (generated)
 """
 
 from __future__ import annotations
@@ -138,9 +137,7 @@ def main() -> None:
             api_version = report_file.parent.parent.name
             reports_by_version.setdefault(api_version, []).append(parse_report(report_file))
 
-        output_dir = pathlib.Path.joinpath(project_dir, "comparisons")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        output_file = pathlib.Path.joinpath(output_dir, "matrix.md")
+        output_file = pathlib.Path.joinpath(project_dir, "conformance-matrix.md")
 
         # Sort implementations alphabetically by organization then project
         for api_version in reports_by_version:
