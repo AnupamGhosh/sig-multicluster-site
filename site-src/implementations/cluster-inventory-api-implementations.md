@@ -20,6 +20,7 @@ The Cluster Inventory API has two kinds of implementations:
 
 ### ClusterProfile API Consumers
 
+- [Headlamp][headlamp]: Alpha (since Headlamp v0.43.0)
 - [Knative Operator][knative-operator]: Alpha (since Knative Operator v1.22)
 - [Kueue (MultiKueue)][kueue]: Alpha (since Kueue v0.15.0, behind the `MultiKueueClusterProfile` feature gate)
 - [multicluster-runtime][mcr]: Alpha (since v0.21.0-alpha.9)
@@ -31,6 +32,7 @@ In this section you will find specific links to code, documentation, and other C
 
 The consumer implementations target different layers:
 
+- Use **Headlamp** when you want a Kubernetes web UI to discover and register clusters from `ClusterProfile` objects.
 - Use the **Knative Operator** to roll out Knative Serving and Eventing to member clusters.
 - Use **MultiKueue** when the workloads you dispatch across clusters are batch jobs.
 - Use **multicluster-runtime** when you are building your own controller on top of controller-runtime and want `ClusterProfile`-driven fleet discovery.
@@ -64,6 +66,15 @@ The feature was announced in the [May 8, 2025 GKE release notes][gke-fleet-sync-
 [gke-fleet-sync-release]: https://cloud.google.com/kubernetes-engine/docs/release-notes#May_08_2025
 [gke-argocd-syncer]: https://github.com/GoogleCloudPlatform/gke-fleet-management/tree/main/argocd-clusterprofile-syncer
 [gke-mco]: https://cloud.google.com/blog/products/containers-kubernetes/multi-cluster-orchestrator-for-cross-region-kubernetes-workloads/
+
+### Headlamp
+
+[Headlamp][headlamp] is an extensible Kubernetes web UI. Its Cluster Inventory integration watches `ClusterProfile` resources, builds Kubernetes clients from configured access providers, and registers discovered clusters in Headlamp so users can browse and manage them from the UI without manually adding each cluster to a kubeconfig.
+
+The feature is alpha/experimental, disabled by default, and can be enabled with the `--enable-cluster-inventory` flag. It was added in [kubernetes-sigs/headlamp#4577][headlamp-pr] and is available since Headlamp v0.43.0.
+
+[headlamp]: https://headlamp.dev/
+[headlamp-pr]: https://github.com/kubernetes-sigs/headlamp/pull/4577
 
 ### Knative Operator
 
