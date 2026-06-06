@@ -1,0 +1,38 @@
+hack/report.py
+  h_7f71279bb5a1b8 1-100
+hack/generate-conformance-matrix.py
+  h_7f71279bb5a1b8 37,42-43,47-50,52-54,56-57,59-60,62-63,65-66,68-69,71-72,77-78,80-90,93-105,108-112,114-118,121-122,124-126,128-140,143-144,146-155,157-158,160-161,163-164,166-167,169-170,173-176,178,184-185,188,192-207,216,219,226,229-230
+  s_61a95fb25bf7a0::t_3751db4654aa23 218
+  s_61a95fb25bf7a0::t_a7a02dbd15026f 73
+  s_eda93aeb3b1fc2::t_e0b8eb9a5b9b2f 51
+  s_eda93aeb3b1fc2::t_72383c630e84cf 55,58,61,64,67,70,74,79,91-92,106-107,113,120,123,127,145,156,159,162,165,168,172,179-183,186-187,189-191,221-224,235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "ef16d32ed008d1bf71260df12b9539224422d194",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_61a95fb25bf7a0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e8af3667-5a28-426c-8be2-16f15045088f",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    },
+    "s_eda93aeb3b1fc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3af5a84-1ea7-4c42-a500-62f9b318edc9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
