@@ -1,0 +1,43 @@
+.gitignore
+  s_eda93aeb3b1fc2::t_f473a69d96cee5 3
+  s_eda93aeb3b1fc2::t_df75e647ea02fe 4
+site-src/implementations/mcs-implementations/comparisons.md
+  s_eda93aeb3b1fc2::t_83c3734cb729a1 4
+hack/generate-conformance-matrix.py
+  s_eda93aeb3b1fc2::t_93aa415972c1f1 228
+  s_eda93aeb3b1fc2::t_afa6d5b82791ed 174-175
+  s_eda93aeb3b1fc2::t_1dab90f0130afe 225,230,234
+  s_eda93aeb3b1fc2::t_11dbdff2c2605f 186,189-190,194,197-198,208-209
+  s_eda93aeb3b1fc2::t_3d6b59ed3afead 219
+  s_eda93aeb3b1fc2::t_4f66898d7829de 173
+  s_eda93aeb3b1fc2::t_3b5d7c6da5be3c 80,177
+  h_7f71279bb5a1b8 49,176,224
+  s_eda93aeb3b1fc2::t_617d7d6026bccc 125
+  s_eda93aeb3b1fc2::t_bca70debf54001 32-34
+  s_eda93aeb3b1fc2::t_67ecee16a4aca8 217,232-233
+  s_eda93aeb3b1fc2::t_a22ac179a9544d 101
+  s_eda93aeb3b1fc2::t_008961eef0f57b 53
+  s_eda93aeb3b1fc2::t_9b558d694c85ac 20,30-31
+  s_eda93aeb3b1fc2::t_3d81aadd2596a0 191-193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "9e7470d6c6e4f026d1f6b40eca0e5f774476ffc3",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_eda93aeb3b1fc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3af5a84-1ea7-4c42-a500-62f9b318edc9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
