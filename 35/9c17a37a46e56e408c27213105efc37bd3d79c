@@ -1,0 +1,14 @@
+hack/mcs_report.py
+  h_7f71279bb5a1b8 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "359c17a37a46e56e408c27213105efc37bd3d79c",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
