@@ -1,0 +1,24 @@
+hack/generate-conformance-matrix.py
+  s_eda93aeb3b1fc2::t_fdf162f166f59b 16,18-19,26-28,36,42,46-49,51-62,64-66,68-92,94-95,97-98,100-101,103-158,160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "e81ecd52dd0e02cbc1558c70abf8161e9ea85fa3",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_eda93aeb3b1fc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3af5a84-1ea7-4c42-a500-62f9b318edc9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
