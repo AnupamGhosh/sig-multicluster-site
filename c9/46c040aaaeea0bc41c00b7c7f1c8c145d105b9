@@ -1,0 +1,43 @@
+hack/generate-conformance-matrix.py
+  s_eda93aeb3b1fc2::t_72fd878193ebb9 177-178
+  s_eda93aeb3b1fc2::t_9f56b7b701c61e 176,182-184,187-189,193,197-199
+  s_eda93aeb3b1fc2::t_3b5d7c6da5be3c 51,139
+  s_eda93aeb3b1fc2::t_11dbdff2c2605f 148,152,157-158,171-172
+  s_eda93aeb3b1fc2::t_4f66898d7829de 136
+  s_eda93aeb3b1fc2::t_ac6d5b65178782 76
+  s_eda93aeb3b1fc2::t_7a9b840ecadb69 16,18-19
+  s_eda93aeb3b1fc2::t_9b558d694c85ac 29-30
+  s_eda93aeb3b1fc2::t_727bcabfac51f1 47
+  h_7f71279bb5a1b8 40,45-46,52-54,56-68,74-75,77-80,82-86,90,92-94,96-99,101-102,105-106,108-117,119-120,122-123,125-126,128-129,131-132,135,138,141,143-144,146-147,149,151,154-156,159-170,179,181,185-186,190-191,194
+  s_eda93aeb3b1fc2::t_a311518a851fc4 196
+  s_eda93aeb3b1fc2::t_bcbd35056fb345 71
+  s_eda93aeb3b1fc2::t_b82e80357693ee 55
+  s_eda93aeb3b1fc2::t_e64cb9f84d2a81 137
+  s_eda93aeb3b1fc2::t_d30698c7695f69 26-28,31-33
+  s_eda93aeb3b1fc2::t_392f317d792319 153
+  s_eda93aeb3b1fc2::t_c0ca482a115c61 192
+  s_eda93aeb3b1fc2::t_87107600a2b0bf 70,72-73,88
+  s_eda93aeb3b1fc2::t_72383c630e84cf 69,81,107,118,121,142,145,150,203
+  s_eda93aeb3b1fc2::t_617d7d6026bccc 89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "c946c040aaaeea0bc41c00b7c7f1c8c145d105b9",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_eda93aeb3b1fc2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3af5a84-1ea7-4c42-a500-62f9b318edc9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
