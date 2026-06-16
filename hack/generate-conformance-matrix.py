@@ -55,15 +55,14 @@ class SubmittedReport:
     generated_report_dir: pathlib.Path
 
     def row(self, project_dir: pathlib.Path) -> str:
-        """Generates each table row in the comparisons page"""
+        """Render each table row in the comparisons page"""
         report_link = self.report_path().relative_to(project_dir).as_posix()
         cols: list[str] = []
-        required_passed, required_total = self.required_counts()
         cols.append(self.organization())
         cols.append(self.project_col())
         cols.append(self.version())
-        cols.append(self.tests_col(required_passed, required_total)) # Required Tests
-        cols.append(self.tests_col(self.passed(), self.total())) # Total Tests
+        cols.append(self.required_tests_col()) # Required Tests
+        cols.append(self.total_tests_col()) # Total Tests
         cols.append(f"[{self.report_name}]({report_link})") # Report
         return "| " + " | ".join(cols) + " |"
 
@@ -72,11 +71,9 @@ class SubmittedReport:
 
     def generate_report(self, mcs_api_ver: str) -> None:
         """Generates the MCS conformance report for an implementation under generated/"""
-        test_sections: list[mcs_report.TestSection] = []
-        for group in self.report_yaml["groups"]: # Required / Optional section 
-            test_rows = [mcs_report.TestRow(test_data) for test_data in group["tests"]]
-            test_section = mcs_report.TestSection(name=group["name"], tests=test_rows)
-            test_sections.append(test_section)
+        test_sections: list[mcs_report.TestSection] = list(  # Required / Optional section
+            map(mcs_report.TestSection.from_yaml_group, self.report_yaml["groups"])
+        )
 
         conformance_report = mcs_report.ConformanceReport( # generates md report
             mcs_api_ver=mcs_api_ver,
@@ -89,29 +86,20 @@ class SubmittedReport:
         self.generated_report_dir.mkdir(parents=True, exist_ok=True)
         conformance_report.generate(self.report_path())
 
-    def tests_col(self, passed: int, total: int) -> str:
-        green_tick = " :white_check_mark:" if passed == total else ""
-        return f"{passed}/{total}{green_tick}"
+    def total_tests_col(self) -> str:
+        green_tick = " :white_check_mark:" if self.passed() == self.total() else ""
+        return f"{self.passed()}/{self.total()}{green_tick}"
 
     def project_col(self) -> str:
         if self.url():
             return f"[{self.project()}]({self.url()})"
         return self.project()
 
-    def required_counts(self) -> tuple[int, int]:
-        required_passed = 0
-        required_total = 0
-
+    def required_tests_col(self) -> str:
         for group in self.report_yaml["groups"]:
-            if group["name"] != "Required":
-                continue  # skip non-required groups
-
-            for test in group["tests"]:
-                required_total += 1
-                if test["passed"]:
-                    required_passed += 1
-
-        return required_passed, required_total
+            if group["name"] == "Required":
+                return mcs_report.TestSection.from_yaml_group(group).passed_summary()
+        raise ValueError("Required tests not found")
 
     def project(self) -> str:
         return self.report_yaml["implementation"].get("project", "")
@@ -146,19 +134,18 @@ class ConformanceMatrix:
         )
 
     def matrix(self, mcs_api_ver: str, submitted_reports: list[SubmittedReport]) -> str:
-        """Generates comparisons tables for a single MCS version"""
+        """Render comparisons table for a single MCS version"""
         lines: list[str] = [f"## {mcs_api_ver}"]
         lines.append(self.header())
         for submitted_report in submitted_reports:
-            submitted_report.generate_report(mcs_api_ver)
             lines.append(submitted_report.row(self.project_dir))
         return "\n".join(lines)
 
     def add_report(self, mcs_api_ver: str, submitted_report: SubmittedReport) -> None:
         self.reports_by_version.setdefault(mcs_api_ver, []).append(submitted_report)
 
-    def generate_reports(self) -> str:
-        """Generates all the tables in mcs-implementations/comparisons/"""
+    def comparison_tables(self) -> str:
+        """Render all per-version comparison tables (for /comparisons page) as markdown."""
         self.sort()
         tables: list[str] = []
         # Iterate in descending order of MCS version
@@ -191,10 +178,11 @@ def main() -> None:
             # report_file.parent.relative_to(reports_dir) = `reports/v0.5.0/gke`
             generated_report_dir=output_dir / report_file.parent.relative_to(reports_dir),
         )
+        submitted_report.generate_report(mcs_api_ver)
         matrix.add_report(mcs_api_ver, submitted_report)
 
     output_file = output_dir / "conformance-matrix.md"
-    sections = matrix.generate_reports()
+    sections = matrix.comparison_tables()
     output_file.write_text(sections)
     print(f"Generated {output_file}")
 

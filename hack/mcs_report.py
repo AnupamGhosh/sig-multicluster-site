@@ -65,6 +65,9 @@ class TestRow:
     def conformant(self) -> bool:
         return self.result["conformant"]
 
+    def passed(self) -> bool:
+        return self.result["passed"]
+
     def description(self) -> str:
         return self.result["desc"]
 
@@ -82,6 +85,11 @@ class TestSection:
     tests: list[TestRow] = field(default_factory=list)
 
     @staticmethod
+    def from_yaml_group(group_yaml: dict) -> "TestSection": # groups[i] of yaml report
+        tests = [TestRow(testrow) for testrow in group_yaml["tests"]]
+        return TestSection(group_yaml["name"], tests)
+    
+    @staticmethod
     def header() -> str:
         return (
             "| Conformant | Labels | Description |\n"
@@ -91,10 +99,26 @@ class TestSection:
     def section(self) -> str:
         lines: list[str] = []
         lines.append(f"## {self.name} Tests")
+        lines.append(f"Passed: {self.passed_summary()}\n")
         lines.append(self.header())
         for test in self.tests:
             lines.append(test.row())
         return "\n".join(lines)
+
+    def passed_counts(self) -> tuple[int, int]:
+        passed = sum(1 for test in self.tests if test.passed())
+        total = len(self.tests)
+        return passed, total
+
+    def passed_summary(self) -> str:
+        passed, total = self.passed_counts()
+        icon = ""
+        if passed == total:
+            icon = " :white_check_mark:"
+        elif self.name == "Required":
+            assert passed > 0, "Required tests should have at least one passed test"
+            icon = " :warning:"
+        return f"{passed}/{total}{icon}"
 
 
 @dataclass
@@ -109,7 +133,7 @@ class ConformanceReport:
 
     def report(self) -> str:
         lines: list[str] = []
-        lines.append("# MCS API Conformance Report")
+        lines.append(f"# {self.project} MCS API Conformance Report")
         lines.append(f"* MCS API Version: {self.mcs_api_ver}")
         lines.append(f"* Organization: {self.organization}")
         lines.append(f"* Project: [{self.project}]({self.project_url})")
