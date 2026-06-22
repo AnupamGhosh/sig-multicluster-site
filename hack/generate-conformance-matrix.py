@@ -13,143 +13,178 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Generate per-version conformance comparison pages from submitted YAML report files.
+"""Generate per-version MCS API conformance comparison pages from submitted YAML reports.
 
-Scans all project directories under the implementations root for a reports/
-subdirectory containing reports as YAML files. Generates comparison Markdown pages
-under each project's directory.
+Scans the mcs-implementations reports/ subdirectory for reports as YAML files and
+generates comparison Markdown pages under its generated/ directory (which is gitignored).
 
 Expected layout:
 site-src/
     implementations/
         mcs-implementations/
             reports/
-                v0.4.1/submariner/v0.23.0.yaml    (submitted)
-                v0.4.1/gke/2026-01-01.yaml        (submitted)
-                v0.4.1/gke/2026-07-01.yaml        (submitted)
-            conformance-matrix.md                 (generated)
+                v0.5.0/submariner/v0.23.0.yaml    (submitted)
+                v0.5.0/gke/2026-01-01.yaml        (submitted)
+                v0.5.0/gke/2026-07-01.yaml        (submitted)
+            generated/                            (generated, gitignored)
+                conformance-matrix.md
+                v0.5.0/submariner/v0.23.0.md
+                v0.5.0/gke/2026-01-01.md
+                v0.5.0/gke/2026-07-01.md
 """
 
 from __future__ import annotations
 
 import pathlib
 from dataclasses import dataclass
+from dataclasses import field
 from typing import Any
 
 import yaml
 
-REPO_URL = "https://github.com/kubernetes-sigs/sig-multicluster-site"
-IMPLEMENTATIONS_DIR = "site-src/implementations"
+import mcs_report
+
+MCS_IMPLEMENTATIONS_DIR = "site-src/implementations/mcs-implementations"
 
 
 @dataclass
-class ReportData:
-    organization: str
-    project: str
-    version: str
-    url: str
-    passed: int
-    total: int
-    required_passed: int
-    required_total: int
-    report_path: str
+class SubmittedReport:
+    """A single submitted conformance report by an implementer"""
+    report_yaml: dict[str, Any]
+    report_name: str
+    generated_report_dir: pathlib.Path
 
+    def row(self, project_dir: pathlib.Path) -> str:
+        """Render each table row in the comparisons page"""
+        report_link = self.report_path().relative_to(project_dir).as_posix()
+        cols: list[str] = []
+        cols.append(self.organization())
+        cols.append(self.project_col())
+        cols.append(self.version())
+        cols.append(self.required_tests_col()) # Required Tests
+        cols.append(self.total_tests_col()) # Total Tests
+        cols.append(f"[{self.report_name}]({report_link})") # Report
+        return "| " + " | ".join(cols) + " |"
 
-def compute_required_counts(groups: list[dict[str, Any]]) -> tuple[int, int]:
-    """Compute required test counts from the groups field in a report.
+    def report_path(self) -> pathlib.Path:
+        return self.generated_report_dir / f"{self.report_name}.md"
 
-    Iterates through test groups and counts passed/total for
-    required tests (group name == "Required").
-    Returns: (required_passed, required_total)
-    """
-    required_passed = 0
-    required_total = 0
-
-    for group in groups:
-        if group.get("name") != "Required":
-            continue
-        for test in group.get("tests", []):
-            required_total += 1
-            if test.get("passed", False):
-                required_passed += 1
-
-    return required_passed, required_total
-
-
-def parse_report(report_file: pathlib.Path) -> ReportData:
-    """Parse a single report.yaml file and return a ReportData instance."""
-    with open(report_file) as f:
-        data: dict[str, Any] = yaml.safe_load(f)
-
-    impl: dict[str, Any] = data.get("implementation", {})
-    required_passed, required_total = compute_required_counts(data.get("groups", []))
-
-    return ReportData(
-        organization=impl.get("organization", ""),
-        project=impl.get("project", ""),
-        version=impl.get("version", ""),
-        url=impl.get("url", ""),
-        passed=data.get("passed", "Not found"),
-        total=data.get("total", "Not found"),
-        required_passed=required_passed,
-        required_total=required_total,
-        report_path=str(report_file),
-    )
-
-
-def generate_version_section(version: str, reports: list[ReportData]) -> str:
-    """Generate Markdown table for a single API version."""
-    lines = [
-        f"## {version}",
-        "| Organization | Project | Version | Required Tests | Total Tests | Report |",
-        "|---|---|---|---|---|---|",
-    ]
-
-    for r in reports:
-        project = r.project
-        if r.url:
-            project = f"[{r.project}]({r.url})"
-
-        report_name = pathlib.Path(r.report_path).name
-        report_link = f"[{report_name}]({REPO_URL}/blob/main/{r.report_path})"
-
-        # for green ticks to appear if all required tests passed/ if all tests passed
-        req_check = " :white_check_mark:" if r.required_passed == r.required_total else ""
-        total_check = " :white_check_mark:" if r.passed == r.total else ""
-
-        lines.append(
-            f"| {r.organization} | {project} | {r.version} "
-            f"| {r.required_passed}/{r.required_total}{req_check} "
-            f"| {r.passed}/{r.total}{total_check} | {report_link} |"
+    def generate_report(self, mcs_api_ver: str) -> None:
+        """Generates the MCS conformance report for an implementation under generated/"""
+        test_sections: list[mcs_report.TestSection] = list(  # Required / Optional section
+            map(mcs_report.TestSection.from_yaml_group, self.report_yaml["groups"])
         )
 
-    lines.append("")
-    return "\n".join(lines)
+        conformance_report = mcs_report.ConformanceReport( # generates md report
+            mcs_api_ver=mcs_api_ver,
+            organization=self.organization(),
+            project=self.project(),
+            project_url=self.url(),
+            impl_ver=self.version(),
+            sections=test_sections,
+        )
+        self.generated_report_dir.mkdir(parents=True, exist_ok=True)
+        conformance_report.generate(self.report_path())
+
+    def total_tests_col(self) -> str:
+        green_tick = " :white_check_mark:" if self.passed() == self.total() else ""
+        return f"{self.passed()}/{self.total()}{green_tick}"
+
+    def project_col(self) -> str:
+        if self.url():
+            return f"[{self.project()}]({self.url()})"
+        return self.project()
+
+    def required_tests_col(self) -> str:
+        for group in self.report_yaml["groups"]:
+            if group["name"] == "Required":
+                return mcs_report.TestSection.from_yaml_group(group).passed_summary()
+        raise ValueError("Required tests not found")
+
+    def project(self) -> str:
+        return self.report_yaml["implementation"].get("project", "")
+
+    def version(self) -> str:
+        return self.report_yaml["implementation"].get("version", "")
+
+    def url(self) -> str:
+        return self.report_yaml["implementation"].get("url", "")
+
+    def passed(self) -> int:
+        return self.report_yaml["passed"]
+
+    def total(self) -> int:
+        return self.report_yaml["total"]
+
+    def organization(self) -> str:
+        return self.report_yaml["implementation"].get("organization", "")
+
+
+@dataclass
+class ConformanceMatrix:
+    """Collects submitted reports by MCS API version and renders the comparison matrix."""
+    project_dir: pathlib.Path  # mcs-implementations directory
+    reports_by_version: dict[str, list[SubmittedReport]] = field(default_factory=dict)
+
+    @staticmethod
+    def header() -> str:
+        return (
+            "| Organization | Project | Version | Required Tests | Total Tests | Report |\n"
+            "|---|---|---|---|---|---|"
+        )
+
+    def matrix(self, mcs_api_ver: str, submitted_reports: list[SubmittedReport]) -> str:
+        """Render comparisons table for a single MCS version"""
+        lines: list[str] = [f"## {mcs_api_ver}"]
+        lines.append(self.header())
+        for submitted_report in submitted_reports:
+            lines.append(submitted_report.row(self.project_dir))
+        return "\n".join(lines)
+
+    def add_report(self, mcs_api_ver: str, submitted_report: SubmittedReport) -> None:
+        self.reports_by_version.setdefault(mcs_api_ver, []).append(submitted_report)
+
+    def comparison_tables(self) -> str:
+        """Render all per-version comparison tables (for /comparisons page) as markdown."""
+        self.sort()
+        tables: list[str] = []
+        # Iterate in descending order of MCS version
+        for mcs_api_ver in sorted(self.reports_by_version.keys(), reverse=True):
+            tables.append(self.matrix(mcs_api_ver, self.reports_by_version[mcs_api_ver]))
+        return "\n\n".join(tables)
+
+    def sort(self) -> None:
+        """Sort reports per MCS ver in ascending order of organization name then project name"""
+        for submitted_reports in self.reports_by_version.values():
+            submitted_reports.sort(key=lambda r: (r.organization().lower(), r.project().lower()))
 
 
 def main() -> None:
-    implementations_dir = pathlib.Path(IMPLEMENTATIONS_DIR)
+    project_dir = pathlib.Path(MCS_IMPLEMENTATIONS_DIR)
+    reports_dir = project_dir / "reports"
+    output_dir = project_dir / "generated" # artifacts are generated in this directory
+    output_dir.mkdir(parents=True, exist_ok=True) # create generated/ directory
 
-    for project_dir in sorted(d for d in implementations_dir.iterdir() if d.is_dir()):
-        reports_dir = pathlib.Path.joinpath(project_dir, "reports")
+    matrix = ConformanceMatrix(project_dir=project_dir) # generates conformance-matrix.md
+    for report_file in sorted(reports_dir.glob("*/*/*.yaml")):
+        with open(report_file) as f:
+            report_yaml: dict[str, Any] = yaml.safe_load(f)
+        mcs_api_ver = report_file.parent.parent.name
+        # Mirror per-version reports layout (e.g. v0.5.0/gke/) under the generated directory
+        submitted_report = SubmittedReport(
+            report_yaml=report_yaml,
+            report_name=report_file.stem,
+            # e.g. report_file = `<path-prefix>/reports/v0.5.0/gke/2026-07-01.yaml`
+            # report_file.parent.relative_to(reports_dir) = `reports/v0.5.0/gke`
+            generated_report_dir=output_dir / report_file.parent.relative_to(reports_dir),
+        )
+        submitted_report.generate_report(mcs_api_ver)
+        matrix.add_report(mcs_api_ver, submitted_report)
 
-        reports_by_version: dict[str, list[ReportData]] = {}
-        for report_file in sorted(reports_dir.glob("*/*/*.yaml")):
-            api_version = report_file.parent.parent.name
-            reports_by_version.setdefault(api_version, []).append(parse_report(report_file))
-
-        output_file = pathlib.Path.joinpath(project_dir, "conformance-matrix.md")
-
-        # Sort implementations alphabetically by organization then project
-        for api_version in reports_by_version:
-            reports_by_version[api_version].sort(
-                key=lambda r: (r.organization.lower(), r.project.lower())
-            )
-
-        versions = sorted(reports_by_version.keys(), reverse=True) # versions in descending order
-        sections = [generate_version_section(v, reports_by_version[v]) for v in versions]
-        output_file.write_text("\n".join(sections))
-        print(f"Generated {output_file}")
+    output_file = output_dir / "conformance-matrix.md"
+    sections = matrix.comparison_tables()
+    output_file.write_text(sections)
+    print(f"Generated {output_file}")
 
 
 if __name__ == "__main__":
