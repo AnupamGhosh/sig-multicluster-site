@@ -24,6 +24,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from dataclasses import field
+import html
 import pathlib
 from typing import Any
 
@@ -69,7 +70,7 @@ class TestRow:
         return self.result["passed"]
 
     def description(self) -> str:
-        return self.result["desc"]
+        return html.escape(self.result["desc"])
 
     def description_url(self) -> str | None:
         return self.result.get("ref")
