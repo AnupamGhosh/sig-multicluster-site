@@ -1,0 +1,25 @@
+hack/mcs_report.py
+  h_7f71279bb5a1b8 73
+  s_cd2ce688477fad::t_3897b89cd164fd 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "f78386edb03d0add6099ee706d48ea4ec36285bc",
+  "prompts": {},
+  "humans": {
+    "h_7f71279bb5a1b8": {
+      "author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_cd2ce688477fad": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "18c6161b-0d9c-4c01-b4b5-969b928677e8",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
