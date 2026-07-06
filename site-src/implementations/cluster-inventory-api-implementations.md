@@ -17,6 +17,7 @@ The Cluster Inventory API has two kinds of implementations:
 
 - [Open Cluster Management][ocm]: Available (shipped since OCM v0.15.0, enhanced in v1.2.0; PlacementDecision API support in progress)
 - [GKE Fleet (ClusterProfile sync)][gke-fleet-sync]: Preview (Google Cloud, announced May 2025)
+- [KubeFleet][kubefleet]: Available (shipped since KubeFleet v0.0.1, enhanced in v0.1.1)
 
 ### ClusterProfile API Consumers
 
@@ -66,6 +67,17 @@ The feature was announced in the [May 8, 2025 GKE release notes][gke-fleet-sync-
 [gke-fleet-sync-release]: https://cloud.google.com/kubernetes-engine/docs/release-notes#May_08_2025
 [gke-argocd-syncer]: https://github.com/GoogleCloudPlatform/gke-fleet-management/tree/main/argocd-clusterprofile-syncer
 [gke-mco]: https://cloud.google.com/blog/products/containers-kubernetes/multi-cluster-orchestrator-for-cross-region-kubernetes-workloads/
+
+### KubeFleet
+
+[KubeFleet][kubefleet] is a CNCF sandbox project for multicluster application management. KubeFleet acts as a ClusterProfile provider: the hub agent's [ClusterProfile controller][kubefleet-controller] synchronizes each joined `MemberCluster` into a `ClusterProfile` object, published by default in the `fleet-system` namespace and labeled `x-k8s.io/cluster-manager=KubeFleet`. Generated profiles carry an `accessProviders` entry with the member cluster's API server endpoint and CA data.
+
+The integration is enabled by default in the hub agent and controlled by the `--enable-cluster-inventory-apis` flag. ClusterProfile generation has shipped since the first KubeFleet release, [v0.0.1 (April 2025)][kubefleet-v0-0-1], and ClusterProfile status reporting (including `accessProviders`) was expanded in [v0.1.1 (December 2025)][kubefleet-v0-1-1].
+
+[kubefleet]: https://kubefleet.dev/
+[kubefleet-controller]: https://github.com/kubefleet-dev/kubefleet/tree/main/pkg/controllers/clusterinventory/clusterprofile
+[kubefleet-v0-0-1]: https://github.com/kubefleet-dev/kubefleet/releases/tag/v0.0.1
+[kubefleet-v0-1-1]: https://github.com/kubefleet-dev/kubefleet/releases/tag/v0.1.1
 
 ### Headlamp
 
