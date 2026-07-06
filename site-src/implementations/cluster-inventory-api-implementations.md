@@ -25,7 +25,7 @@ The Cluster Inventory API has two kinds of implementations:
 - [Knative Operator][knative-operator]: Alpha (since Knative Operator v1.22)
 - [Kueue (MultiKueue)][kueue]: Alpha (since Kueue v0.15.0, behind the `MultiKueueClusterProfile` feature gate)
 - [multicluster-runtime][mcr]: Alpha (since v0.21.0-alpha.9)
-- [Argo CD][argocd]: In review (implementation in [argoproj/argo-cd#24509][argocd-pr]; unreleased, target version not yet determined)
+- [Argo CD][argocd]: Available (via [argoproj-labs/clusterprofile-integration-for-argocd][argocd-cp-integration])
 
 ## Implementations
 
@@ -37,7 +37,7 @@ The consumer implementations target different layers:
 - Use the **Knative Operator** to roll out Knative Serving and Eventing to member clusters.
 - Use **MultiKueue** when the workloads you dispatch across clusters are batch jobs.
 - Use **multicluster-runtime** when you are building your own controller on top of controller-runtime and want `ClusterProfile`-driven fleet discovery.
-- Use **Argo CD** to deliver applications across clusters via GitOps (integration under review upstream, not yet merged).
+- Use **Argo CD** to deliver applications across clusters via GitOps.
 
 ### Open Cluster Management
 
@@ -60,7 +60,7 @@ OCM is also tracking support for the SIG Multicluster [PlacementDecision API][ke
 
 [GKE Fleet][gke-fleet] is Google Cloud's fleet management layer for Google Kubernetes Engine. Its [ClusterProfile sync][gke-fleet-sync] feature, available in Preview under the Pre-GA Offerings Terms, acts as a ClusterProfile provider: Fleet is the source of truth, and fleet membership changes (additions, updates, and deletions) are one-way synchronized to `ClusterProfile` objects on a designated hub cluster. Generated profiles are published in the `fleet-cluster-inventory` namespace by default and carry the label `x-k8s.io/cluster-manager=gke-fleet`.
 
-The feature was announced in the [May 8, 2025 GKE release notes][gke-fleet-sync-release]. To enable it, an operator designates a GKE cluster as the hub by setting the `fleet-clusterinventory-management-cluster=true` label. The documented procedure currently targets GKE clusters; behavior for non-GKE fleet members (such as attached clusters) is not covered by the Preview documentation. Google documents the [Argo CD ClusterProfile Syncer][gke-argocd-syncer] and [Multi-cluster Orchestrator][gke-mco] as example consumers; the syncer is a GKE-focused, Google-maintained integration, distinct from the upstream [Argo CD](#argo-cd) proposal described below.
+The feature was announced in the [May 8, 2025 GKE release notes][gke-fleet-sync-release]. To enable it, an operator designates a GKE cluster as the hub by setting the `fleet-clusterinventory-management-cluster=true` label. The documented procedure currently targets GKE clusters; behavior for non-GKE fleet members (such as attached clusters) is not covered by the Preview documentation. Google documents the [Argo CD ClusterProfile Syncer][gke-argocd-syncer] and [Multi-cluster Orchestrator][gke-mco] as example consumers; the syncer is a GKE-focused, Google-maintained integration, distinct from the [Argo CD](#argo-cd) integration described below.
 
 [gke-fleet]: https://cloud.google.com/kubernetes-engine/fleet-management/docs
 [gke-fleet-sync]: https://cloud.google.com/kubernetes-engine/fleet-management/docs/generate-inventory-for-integrations
@@ -124,12 +124,10 @@ The Cluster Inventory API provider was introduced in [v0.21.0-alpha.9 (August 20
 
 ### Argo CD
 
-[Argo CD][argocd] is a declarative, GitOps continuous delivery tool for Kubernetes. A ClusterProfile integration is under review in [argoproj/argo-cd#24509][argocd-pr] (tracking [argoproj/argo-cd#24282][argocd-issue]); it is not yet merged, and the release version that will first carry the feature is not yet determined.
+[Argo CD][argocd] is a declarative, GitOps continuous delivery tool for Kubernetes. ClusterProfile support is provided by [argoproj-labs/clusterprofile-integration-for-argocd][argocd-cp-integration].
 
-The proposal introduces a dedicated controller that watches `ClusterProfile` resources and materializes a corresponding Argo CD cluster Secret for each profile, so that the existing Argo CD application-sync machinery can target `ClusterProfile`-registered member clusters. The design includes two credential modes: built-in cloud-provider shortcuts, and a [KEP-5339][kep-5339] exec credential plugin mode. The integration is planned to support both [KEP-4322][kep-4322] (as a `ClusterProfile` reader) and [KEP-5339][kep-5339] (via the exec credential plugin path). The configuration surface is still in flux; see the PR for current details. This upstream proposal is separate from the Google-maintained [Argo CD ClusterProfile Syncer][gke-argocd-syncer] described in the [GKE Fleet](#gke-fleet-clusterprofile-sync) section.
+The integration runs as a controller that watches `ClusterProfile` resources and materializes a corresponding Argo CD cluster Secret for each `ClusterProfile`, so the existing Argo CD application-sync machinery can target `ClusterProfile`-registered member clusters. It supports two credential modes: built-in cloud-provider authentication for GCP, AWS, and Azure, and a [KEP-5339][kep-5339] exec credential plugin mode. See the project README for installation and configuration. This project is separate from the Google-maintained [Argo CD ClusterProfile Syncer][gke-argocd-syncer] described in the [GKE Fleet](#gke-fleet-clusterprofile-sync) section.
 
 [argocd]: https://argo-cd.readthedocs.io/
-[argocd-pr]: https://github.com/argoproj/argo-cd/pull/24509
-[argocd-issue]: https://github.com/argoproj/argo-cd/issues/24282
-[kep-4322]: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/4322-cluster-inventory
+[argocd-cp-integration]: https://github.com/argoproj-labs/clusterprofile-integration-for-argocd
 [kep-5339]: https://github.com/kubernetes/enhancements/tree/master/keps/sig-multicluster/5339-clusterprofile-plugin-credentials
