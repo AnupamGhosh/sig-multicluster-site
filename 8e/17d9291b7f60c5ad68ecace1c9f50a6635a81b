@@ -1,0 +1,19 @@
+netlify.toml
+  s_74e13f20247b90::t_870733bfe688f3 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.11",
+  "base_commit_sha": "8e17d9291b7f60c5ad68ecace1c9f50a6635a81b",
+  "prompts": {},
+  "sessions": {
+    "s_74e13f20247b90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d09a3b30-caef-40ea-991c-17453bb97eed",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Anupam Ghosh <iamanupamghosh@gmail.com>"
+    }
+  }
+}
